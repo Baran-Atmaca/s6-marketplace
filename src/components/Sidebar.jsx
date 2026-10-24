@@ -1,4 +1,6 @@
 import Category from "./../components/Category";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 /*
   Bu component;
@@ -9,12 +11,24 @@ import Category from "./../components/Category";
   - Listelerken kullandığı Category componentına gerekli props'ları aktarmalı (Category componentını inceleyebilirsin)
 */
 
-export default function Sidebar() {
+export default function Sidebar({ activeCategory, handleCatChange }) {
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    axios
+      .get("https://fakestoreapi.com/products/categories")
+      .then((res) => {
+        setCategories(res.data);
+      });
+  }, []);
   return (
     <nav>
       <h2>Kategoriler</h2>
-      {[].map((category, index) => (
-        <Category key={index} />
+      {categories.map((category, index) => (
+        <Category key={index}
+                  category={category}
+                  isActive={category === activeCategory}
+                  handleCatChange={handleCatChange} 
+        />
       ))}
     </nav>
   );
